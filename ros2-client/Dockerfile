@@ -1,0 +1,67 @@
+ARG ROS_DISTRO=foxy
+FROM ros:${ROS_DISTRO}
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get clean
+RUN apt-get update && apt-get install -y \
+    lsb  \
+    unzip \
+    wget \
+    curl \
+    xterm \
+    devilspie \
+    xfce4-terminal \
+    vim \
+    nmap
+
+RUN apt-get install -y ros-foxy-rmw-fastrtps-cpp
+RUN apt-get install -y ros-foxy-desktop
+ENV QT_X11_NO_MITSHM=1
+
+RUN . /opt/ros/foxy/setup.sh
+
+ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+
+RUN echo 'export RMW_IMPLEMENTATION=rmw_fastrtps_cpp' >> /root/.bashrc
+RUN echo 'source /opt/ros/foxy/setup.bash ' >> /root/.bashrc
+
+# INSTALL FASTDDS Latest (2.9.1 ~)
+RUN apt-get install -y cmake g++ python3-pip wget git
+RUN apt-get install -y  libasio-dev libtinyxml2-dev
+RUN apt-get install -y libssl-dev  python3-pip
+RUN python3 -m pip install --upgrade pip && python3 -m pip install colcon-common-extensions vcstool
+RUN mkdir -p /home/Fast-DDS/src
+WORKDIR /home/Fast-DDS
+RUN wget https://raw.githubusercontent.com/eProsima/Fast-DDS/master/fastrtps.repos
+RUN vcs import src < fastrtps.repos
+RUN colcon build
+RUN . /home/Fast-DDS/install/setup.sh
+RUN echo 'source /home/Fast-DDS/install/setup.bash ' >> /root/.bashrc
+
+# Copy configuration files
+COPY fastdds-client.xml /home/fastdds-client-default.xml
+RUN python3 -m pip install boto3 lxml
+COPY config.py /home/config.py
+
+WORKDIR /
+
+##########
+# Custom Setting
+##########
+
+# Add the application source file to the entrypoint.
+RUN echo  "#!/bin/bash \n\
+set -e \n\
+export ROS_DOMAIN_ID=0 \n\
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp \n\
+python3 /home/config.py \n\
+export ROS_DISCOVERY_SERVER=\"${Server_IP_ADDR}:9843\" \n\
+export FASTRTPS_DEFAULT_PROFILES_FILE=/home/fastdds-client.xml \n\
+source /opt/ros/foxy/setup.bash \n\
+source /home/Fast-DDS/install/setup.bash \n\
+source /root/.bashrc \n" > /entrypoint.sh
+RUN echo 'exec "$@" ' >> /entrypoint.sh
+RUN cat /entrypoint.sh
+RUN sudo chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

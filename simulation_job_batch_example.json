@@ -1,0 +1,125 @@
+{
+  "batchPolicy": {
+    "timeoutInSeconds": 2000,
+    "maxConcurrency": 2
+  },
+  "createSimulationJobRequests": [
+    {
+      "maxJobDurationInSeconds": 1500,
+      "iamRole": "arn:aws:iam::012345678901:role/DiscoveryServerStack3-RoboMakerSimulationRole-ONLG6NCBTFX1",
+      "failureBehavior": "Fail",
+      "robotApplications": [
+        {
+          "application": "arn:aws:robomaker:us-east-1:012345678901:robot-application/demo-robot-app/1677566680361",
+          "applicationVersion": "$LATEST",
+          "launchConfig": {
+            "environmentVariables": {
+              "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/fastdds-client.xml"
+            },
+            "portForwardingConfig": {
+              "portMappings": [
+                {
+                  "jobPort": 49152,
+                  "applicationPort": 49152,
+                  "enableOnPublicIp": false
+                }
+              ]
+            },
+            "streamUI": true,
+            "command": [
+              "ros2",
+              "run",
+              "demo_nodes_cpp",
+              "talker"
+            ]
+          },
+          "uploadConfigurations": [],
+          "useDefaultUploadConfigurations": false,
+          "tools": [
+            {
+              "streamUI": true,
+              "name": "xterm",
+              "command": "/usr/bin/xterm",
+              "streamOutputToCloudWatch": true,
+              "exitBehavior": "RESTART"
+            }
+          ],
+          "useDefaultTools": false
+        }
+      ],
+      "vpcConfig": {
+        "subnets": [
+          "subnet-08649ce6f20e02d64",
+          "subnet-05aa269cc64f00258"
+        ],
+        "securityGroups": [
+          "sg-0df187e7709877ebf"
+        ],
+        "assignPublicIp": true
+      },
+      "tags": {
+        "name": "demo-talker"
+      }
+    },
+    {
+      "maxJobDurationInSeconds": 1500,
+      "iamRole": "arn:aws:iam::012345678901:role/DiscoveryServerStack3-RoboMakerSimulationRole-ONLG6NCBTFX1",
+      "failureBehavior": "Fail",
+      "robotApplications": [
+        {
+          "application": "arn:aws:robomaker:us-east-1:012345678901:simulation-application/demo-robot-app/1677561731265",
+          "applicationVersion": "$LATEST",
+          "launchConfig": {
+            "environmentVariables": {
+              "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/fastdds-client.xml"
+            },
+            "portForwardingConfig": {
+              "portMappings": [
+                {
+                  "jobPort": 49152,
+                  "applicationPort": 49152,
+                  "enableOnPublicIp": false
+                }
+              ]
+            },
+            "streamUI": true,
+            "command": [
+              "ros2",
+              "run",
+              "demo_nodes_cpp",
+              "listener"
+            ]
+          },
+          "uploadConfigurations": [],
+          "useDefaultUploadConfigurations": false,
+          "tools": [
+            {
+              "streamUI": true,
+              "name": "xterm",
+              "command": "/usr/bin/xterm",
+              "streamOutputToCloudWatch": true,
+              "exitBehavior": "RESTART"
+            }
+          ],
+          "useDefaultTools": false
+        }
+      ],
+      "vpcConfig": {
+        "subnets": [
+          "subnet-08649ce6f20e02d64",
+          "subnet-05aa269cc64f00258"
+        ],
+        "securityGroups": [
+          "sg-0df187e7709877ebf"
+        ],
+        "assignPublicIp": true
+      },
+      "tags": {
+        "name": "demo-listener"
+      }
+    }
+  ],
+  "tags": {
+    "name": "demo-all"
+  }
+}

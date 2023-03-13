@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dds>
+    <profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+        <transport_descriptors>
+            <transport_descriptor>
+                <transport_id>TCPv4_SERVER</transport_id>
+                <type>TCPv4</type>
+                <listening_ports>
+                    <port>9843</port>
+                    <port>64863</port>
+                </listening_ports>
+                <wan_addr>${Server_IP_ADDR}</wan_addr> <!-- This subscriber computer WAN address -->
+            </transport_descriptor>
+        </transport_descriptors>
+        <participant profile_name="participant_server" is_default_profile="true">
+            <rtps>
+                <prefix>
+                    44.53.00.5f.45.50.52.4f.53.49.4d.41 <!-- 12-byte server unique id -->
+                </prefix>
+                <userTransports>
+                    <transport_id>TCPv4_SERVER</transport_id>
+                </userTransports>
+                <useBuiltinTransports>false</useBuiltinTransports>
+
+                <builtin>
+                    <discovery_config>
+                        <discoveryProtocol>SERVER</discoveryProtocol> <!-- participant is metatrafic hub -->
+                        <leaseDuration>
+                            <sec>DURATION_INFINITY</sec>
+                        </leaseDuration>
+                    </discovery_config>
+                    <metatrafficUnicastLocatorList> <!-- here server listening for clients metatrafic -->
+                        <locator>
+                            <tcpv4>
+                                <!-- if no address is provided the server would export all its public interfaces as address -->
+                                <!-- this is a logical port, the physical one is specify as listening port above -->
+                                <physical_port>9843</physical_port>
+                                <port>64863</port>
+                                <wan_address>${Server_IP_ADDR}</wan_address>
+                            </tcpv4>
+                        </locator>
+                    </metatrafficUnicastLocatorList>
+                </builtin>
+            </rtps>
+        </participant>
+    </profiles>
+</dds>

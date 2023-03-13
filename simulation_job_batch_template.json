@@ -1,0 +1,125 @@
+{
+  "batchPolicy": {
+    "timeoutInSeconds": 2000,
+    "maxConcurrency": 2
+  },
+  "createSimulationJobRequests": [
+    {
+      "maxJobDurationInSeconds": 1500,
+      "iamRole": "[RoboMaker Simulation Role ARN]",
+      "failureBehavior": "Fail",
+      "robotApplications": [
+        {
+          "application": "[Robo Application's ARN]",
+          "applicationVersion": "$LATEST",
+          "launchConfig": {
+            "environmentVariables": {
+              "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/fastdds-client.xml"
+            },
+            "portForwardingConfig": {
+              "portMappings": [
+                {
+                  "jobPort": 49152,
+                  "applicationPort": 49152,
+                  "enableOnPublicIp": false
+                }
+              ]
+            },
+            "streamUI": true,
+            "command": [
+              "ros2",
+              "run",
+              "demo_nodes_cpp",
+              "talker"
+            ]
+          },
+          "uploadConfigurations": [],
+          "useDefaultUploadConfigurations": false,
+          "tools": [
+            {
+              "streamUI": true,
+              "name": "xterm",
+              "command": "/usr/bin/xterm",
+              "streamOutputToCloudWatch": true,
+              "exitBehavior": "RESTART"
+            }
+          ],
+          "useDefaultTools": false
+        }
+      ],
+      "vpcConfig": {
+        "subnets": [
+          "[VPC's subnet name]",
+          "[VPC's subnet name]"
+        ],
+        "securityGroups": [
+          "[VPC's security group name]"
+        ],
+        "assignPublicIp": true
+      },
+      "tags": {
+        "name": "demo-talker"
+      }
+    },
+    {
+      "maxJobDurationInSeconds": 1500,
+      "iamRole": "[RoboMaker Simulation Role ARN]",
+      "failureBehavior": "Fail",
+      "robotApplications": [
+        {
+          "application": "[Robo Application's ARN]",
+          "applicationVersion": "$LATEST",
+          "launchConfig": {
+            "environmentVariables": {
+              "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/fastdds-client.xml"
+            },
+            "portForwardingConfig": {
+              "portMappings": [
+                {
+                  "jobPort": 49152,
+                  "applicationPort": 49152,
+                  "enableOnPublicIp": false
+                }
+              ]
+            },
+            "streamUI": true,
+            "command": [
+              "ros2",
+              "run",
+              "demo_nodes_cpp",
+              "listener"
+            ]
+          },
+          "uploadConfigurations": [],
+          "useDefaultUploadConfigurations": false,
+          "tools": [
+            {
+              "streamUI": true,
+              "name": "xterm",
+              "command": "/usr/bin/xterm",
+              "streamOutputToCloudWatch": true,
+              "exitBehavior": "RESTART"
+            }
+          ],
+          "useDefaultTools": false
+        }
+      ],
+      "vpcConfig": {
+        "subnets": [
+          "[VPC's subnet name]",
+          "[VPC's subnet name]"
+        ],
+        "securityGroups": [
+          "[VPC's security group name]"
+        ],
+        "assignPublicIp": true
+      },
+      "tags": {
+        "name": "demo-listener"
+      }
+    }
+  ],
+  "tags": {
+    "name": "demo-all"
+  }
+}
